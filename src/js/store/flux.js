@@ -5,6 +5,9 @@ const getState = ({ getStore, getActions, setStore }) => {// setStore actualiza 
 			favourites: [],  //lisa vacia apra agregar personajes favoritos
 			planets: [],
 			vehicles: [],
+			one_character: null,
+			one_planet: null,
+			one_vehicle: null,
 		},
 		actions: {
 			loadCharacters: async () => {
@@ -17,16 +20,47 @@ const getState = ({ getStore, getActions, setStore }) => {// setStore actualiza 
 				}
 			},
 
-			setFavourites: (favourite) => {
-				const store = getStore()
-				console.log(favourite);
-				console.log(store.favourites);
+			getCharacter: async (id) => {
+				try {
+					const response = await fetch('https://www.swapi.tech/api/people/' + id);
+					const data = await response.json();
+					setStore({ one_character: data.result.properties });
+				} catch (error) {
+					console.error("Error loading character:", error);
+				}
+			},
 
 
+			getVehicle: async (id) => {
+				try {
+					const response = await fetch('https://www.swapi.tech/api/vehicles/' + id); // Llamo a la API
+					const data = await response.json();
+					setStore({ one_vehicle: data.result.properties }); // Guardo  en el store
+				} catch (error) {
+					console.error("Error loading vehicle:", error);
+				}
+			},
 
-				setStore({ favourites: [...store.favourites, favourite] });
+			getPlanet: async (id) => {
+				try {
+					const response = await fetch('https://www.swapi.tech/api/planets/' + id); // Llamo a la API
+					const data = await response.json();
+					setStore({ one_planet: data.result.properties }); // Guardo en el store
+				} catch (error) {
+					console.error("Error loading planet:", error);
+				}
+
+
 
 			},
+
+			setFavourites: (favourite) => {
+				const store = getStore();
+				if (!store.favourites.includes(favourite)) {//si esta en favoritos ya agregado no lo puedo agregar nuevamente
+					setStore({ favourites: [...store.favourites, favourite] });
+				}
+			},
+
 
 			loadPlanets: async () => {
 				try {
@@ -37,11 +71,13 @@ const getState = ({ getStore, getActions, setStore }) => {// setStore actualiza 
 					console.error("Error loading planets:", error);
 				}
 			},
-			setPlanets: (planet) => {
-				const store = getStore()
-				setStore({ planets: [...store.planets, planet] });
 
+
+			setPlanets: (favourite) => {
+				const store = getStore();
+				setStore({ planets: [...store.planets, favourite] });
 			},
+
 
 
 			loadVehicles: async () => {
@@ -54,9 +90,9 @@ const getState = ({ getStore, getActions, setStore }) => {// setStore actualiza 
 				}
 			},
 
-			setVehicles: (vehicle) => {
+			setVehicles: (favourite) => {
 				const store = getStore()
-				setStore({ vehicles: [...store.vehicles, vehicle] });
+				setStore({ vehicles: [...store.vehicles, vehicle] });//mismo que arriba
 
 			},
 
