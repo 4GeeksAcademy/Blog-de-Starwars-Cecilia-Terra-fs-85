@@ -5,6 +5,7 @@ import { Context } from '../store/appContext';
 
 const Cardplanets = ({ id, name }) => {
     const { store, actions } = useContext(Context);
+    const isFavourite = store.favourites.includes(name);
     return (
         <div className="card" style={{ width: "20rem", height: "25rem" }}>
             <img src="https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg" style={{ width: "auto", height: "150px" }} />
@@ -15,8 +16,9 @@ const Cardplanets = ({ id, name }) => {
                     <Link to={`/detailsplanets/${id}`} className="btn btn-outline-primary">Learn More</Link>
                     <button
                         onClick={() => actions.setFavourites(name)}
-                        className="no-border btn btn-warning">
-                        <i className="fa-regular fa-heart"></i>
+                        className={`no-border btn ${isFavourite ? "btn-primary" : "btn-warning"}`}
+                    >
+                        <i className={isFavourite ? "fa-solid fa-heart" : "fa-regular fa-heart"}></i>
                     </button>
                 </div>
             </div>
